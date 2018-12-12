@@ -10,9 +10,9 @@ y = y.reshape(4,1)
 class MLP(nn.Module):
     def __init__(self):
         super(MLP,self).__init__()
-        self.lin1 = nn.Linear(2,2)
+        self.lin1 = nn.Linear(2,3,bias=True)
         self.act1 = nn.Tanh()
-        self.lin2 = nn.Linear(2,1)
+        self.lin2 = nn.Linear(3,1,bias=True)
         self.act2 = nn.Sigmoid()
     def forward(self, x):
         x = self.act1(self.lin1(x))
@@ -27,9 +27,10 @@ learning_rate = .05
 optimizer = optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = nn.MSELoss()
 
-n_epochs = 2000
+n_epochs = 50000
 net.train()
 for i in range(n_epochs):
+    optimizer.zero_grad()
     y_hat = net.forward(x)
     loss = loss_func(y_hat, y)
     loss.backward(loss)
@@ -37,5 +38,5 @@ for i in range(n_epochs):
 net.eval()
 
 y_hat = net.forward(x)
-print("Predictions before training:",(y_hat > .5).t().numpy())
+print("Predictions after training:",(y_hat > .5).t().numpy())
 
